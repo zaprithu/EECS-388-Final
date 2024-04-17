@@ -6,30 +6,35 @@
 
 void auto_brake(int devid)
 {
-    // Task-1: 
-    // Your code here (Use Lab 02 - Lab 04 for reference)
-    // Use the directions given in the project document
-    // Turn on the RED LED
-    gpio_write(GREEN_LED, 0);//green light off initially
-    gpio_write(RED_LED, 0);//red light off initially
-    if (devid > 200){
-        gpio_write(GREEN_LED, 1); // Turns on green LED light
-        gpio_write(RED_LED, 0); // Turns off red LED light
+    // Turn off both LEDs initially
+    gpio_write(GREEN_LED, 0);
+    gpio_write(RED_LED, 0);
+
+    if (devid > 200) {
+        // Turns on green LED light only
+        gpio_write(GREEN_LED, 1);
     } 
-    else if (devid > 100 && devid <= 200){
-         gpio_write(GREEN_LED, 1); // Turns on green LED light
-         gpio_write(RED_LED, 1); //Turns on red LED light
+    else if (devid > 100) {
+        // Turns on both green and red LED lights
+        gpio_write(GREEN_LED, 1);
+        gpio_write(RED_LED, 1);
     }
-    else if (devid > 60 && devid <= 100){
-        gpio_write(GREEN_LED, 0); //Turns of green LED light
-        gpio_write(RED_LED,1); // Turns on red LED light
-    } 
-    else {
-        while (1)(devid <= 60){
+    else if (devid > 60) {
+        // Turns on red LED light only
+        gpio_write(RED_LED, 1);
+    }
+    else if (devid <= 60) {
+        // Blink the red LED
+        while (1) {
             gpio_write(RED_LED, 1);
             delay(100); // LED is on for 100 milliseconds
             gpio_write(RED_LED, 0);
             delay(100); // LED is off for 100 milliseconds
+            
+            // Check if the devid has been updated to break the loop
+            if (devid > 60) {
+                break;
+            }
         }
     }
 }
