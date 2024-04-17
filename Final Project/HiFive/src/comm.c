@@ -3,9 +3,6 @@
 #include <string.h>
 
 #include "eecs388_lib.h"
-#define SERVO_PULSE_MAX 2400
-#define SERVO_PULSE_MIN 544     
-#define SERVO_PERIOD    20000  
 
 void auto_brake(int devid)
 {
@@ -39,6 +36,8 @@ void auto_brake(int devid)
     }
 }
 
+
+
 int read_from_pi(int devid)
 {
     // Task-2: 
@@ -49,28 +48,9 @@ int read_from_pi(int devid)
 
 void steering(int gpio, int pos)
 {
-    // Task-3: Implement servo control as specified in the project document. Refer to Lab 05 for PWM implementation details.
-    
-    // Calculate the duty cycle 'on' time in microseconds. This is the time the servo signal line should be high.
-    // SERVO_PULSE_MIN and SERVO_PULSE_MAX are constants that define the pulse width in microseconds
-    // corresponding to the servo's minimum (0 degrees) and maximum (180 degrees) positions.
-    int onTime = SERVO_PULSE_MIN + pos * (SERVO_PULSE_MAX - SERVO_PULSE_MIN) / 180; 
-    
-    // Calculate the 'off' time by subtracting the 'on' time from the servo's total period.
-    // SERVO_PERIOD is a constant representing the total period of the servo PWM signal in microseconds.
-    int offTime = SERVO_PERIOD - onTime;
-    
-    // Set the GPIO pin high to signal the start of the 'on' period.
-    gpio_write(gpio, ON);
-
-    // Wait for the 'on' period to end.
-    delay_usec(onTime);
-
-    // Set the GPIO pin low to signal the start of the 'off' period.
-    gpio_write(gpio, OFF);
-
-    // Wait for the 'off' period to end before the next cycle begins.
-    delay_usec(offTime);
+    // Task-3: 
+    // Your code goes here (Use Lab 05 for reference)
+    // Check the project document to understand the task
 }
 
 
