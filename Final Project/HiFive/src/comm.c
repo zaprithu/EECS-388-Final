@@ -6,35 +6,44 @@
 
 void auto_brake(int devid)
 {
-    gpio_write(GREEN_LED, 0); // Turn off green LED initially
-    gpio_write(RED_LED, 0); // Turn off red LED initially
-    
-    if (devid > 200) {
-        gpio_write(GREEN_LED, 1); // Turn on green LED light only
-    } 
-    else if (devid > 100) {
-        gpio_write(GREEN_LED, 1); // Turn on green LED light
-        gpio_write(RED_LED, 1); // Turn on red LED light (for yellow LED appearance)
-    }
-    else if (devid > 60) {
-        gpio_write(RED_LED, 1); // Turn on red LED light only
-    }
-    else {
-        // Blink the red LED
-        while (1) {
-            gpio_write(RED_LED, 1);
-            delay(100); // LED is on for 100 milliseconds
-            gpio_write(RED_LED, 0);
-            delay(100); // LED is off for 100 milliseconds
+    static int count = 0;
 
-            // Update `devid` value by reading new data from the sensor here
-
-            if (devid > 60) {
-                break; // Exit loop if devid is greater than 60
+    if ('Y' == ser_read(devid) && 'Y' == ser_read(devid)){
+        int distance = (ser_read(devid)| (ser_read(devid) << 8));
+            gpio_write(GREEN_LED, OFF); // Turn off green LED initially
+            gpio_write(RED_LED, OFF); // Turn off red LED initially
+        if (distance > 200) {
+            gpio_write(RED_LED, OFF); // Turn off red LED initially
+            gpio_write(GREEN_LED, ON); // Turn on green LED light only
+        } 
+        else if (distance > 100 && distance < 200) {
+            gpio_write(GREEN_LED, ON); // Turn on green LED light
+            gpio_write(RED_LED, ON); // Turn on red LED light (for yellow LED appearance)
+        }
+        else if (distance > 60 && distance < 100) {
+            gpio_write(GREEN_LED, OFF); // Turn on green LED light
+            gpio_write(RED_LED, ON); // Turn on red LED light only
+        }
+        else {
+            // Blink the red LED
+            count++;
+            gpio_write(GREEN_LED, OFF);
+            while (count >= 10){
+                gpio_write(RED_LED, ON);
+                delay(100); // LED is on for 100 milliseconds
+                gpio_write(RED_LED, OFF);
+                delay(100); // LED is off for 100 milliseconds
+                count = 0;
+                
+                if (count > 60) {
+                    break;
+                }
             }
+            
         }
     }
 }
+
 
 
 
