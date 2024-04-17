@@ -6,34 +6,31 @@
 
 void auto_brake(int devid)
 {
-    // Turn off both LEDs initially
-    gpio_write(GREEN_LED, 0);
-    gpio_write(RED_LED, 0);
-
+    gpio_write(GREEN_LED, 0); // Turn off green LED initially
+    gpio_write(RED_LED, 0); // Turn off red LED initially
+    
     if (devid > 200) {
-        // Turns on green LED light only
-        gpio_write(GREEN_LED, 1);
+        gpio_write(GREEN_LED, 1); // Turn on green LED light only
     } 
     else if (devid > 100) {
-        // Turns on both green and red LED lights
-        gpio_write(GREEN_LED, 1);
-        gpio_write(RED_LED, 1);
+        gpio_write(GREEN_LED, 1); // Turn on green LED light
+        gpio_write(RED_LED, 1); // Turn on red LED light (for yellow LED appearance)
     }
     else if (devid > 60) {
-        // Turns on red LED light only
-        gpio_write(RED_LED, 1);
+        gpio_write(RED_LED, 1); // Turn on red LED light only
     }
-    else if (devid <= 60) {
+    else {
         // Blink the red LED
         while (1) {
             gpio_write(RED_LED, 1);
             delay(100); // LED is on for 100 milliseconds
             gpio_write(RED_LED, 0);
             delay(100); // LED is off for 100 milliseconds
-            
-            // Check if the devid has been updated to break the loop
+
+            // Update `devid` value by reading new data from the sensor here
+
             if (devid > 60) {
-                break;
+                break; // Exit loop if devid is greater than 60
             }
         }
     }
