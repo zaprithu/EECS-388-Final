@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "eecs388_lib.h"
 #define SERVO_PULSE_MAX 2400
@@ -42,8 +43,18 @@ void auto_brake(int devid)
 int read_from_pi(int devid)
 {
     // Task-2: 
+    //after performing Task-2 at dnn.py code, modify this part to read angle values from Raspberry Pi
     // You code goes here (Use Lab 09 for reference)
-    // After performing Task-2 at dnn.py code, modify this part to read angle values from Raspberry Pi.
+    
+    char angle_txt[100]; // creates array to store angle value as characters (will be converted to int later)
+    int angle = 0; // creates a variable to store the angle value as an int  
+    
+    if (ser_isready(1)) {
+        ser_readline(devid, sizeof(angle_txt), angle_txt); // reads the line from the pi and and stores it as chars in angle_txt
+        angle = atoi(line); // converts angle_txt into an int and stores it into the angle variable
+    }
+    
+    return angle; // returns the read angle integer value
 
 }
 
