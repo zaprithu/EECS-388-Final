@@ -10,35 +10,33 @@
 
 void auto_brake(int devid)
 {
-    gpio_write(GREEN_LED, 0); // Turn off green LED initially
-    gpio_write(RED_LED, 0); // Turn off red LED initially
-    
-    if (devid > 200) {
-        gpio_write(GREEN_LED, 1); // Turn on green LED light only
-    } 
-    else if (devid > 100) {
-        gpio_write(GREEN_LED, 1); // Turn on green LED light
-        gpio_write(RED_LED, 1); // Turn on red LED light (for yellow LED appearance)
-    }
-    else if (devid > 60) {
-        gpio_write(RED_LED, 1); // Turn on red LED light only
-    }
-    else {
-        // Blink the red LED
-        while (1) {
-            gpio_write(RED_LED, 1);
-            delay(100); // LED is on for 100 milliseconds
-            gpio_write(RED_LED, 0);
-            delay(100); // LED is off for 100 milliseconds
+    static int count = 0;
 
-            // Update `devid` value by reading new data from the sensor here
-
-            if (devid > 60) {
-                break; // Exit loop if devid is greater than 60
-            }
+    if ('Y' == ser_read(devid) && 'Y' == ser_read(devid)){
+        int distance = (ser_read(devid)| (ser_read(devid) << 8));
+        if (distance <= 60) {
+            gpio_write(RED_LED, ON); // Turn off red LED initially
+            gpio_write(GREEN_LED, OFF); // Turn on green LED light only
+            delay(100);
+            gpio_write(RED_LED, OFF); // Turn off red LED initially
+            delay(100);
+        } 
+        else if (distance <= 100) {
+            gpio_write(GREEN_LED, OFF); // Turn on green LED light
+            gpio_write(RED_LED, ON); // Turn on red LED light only
         }
+        else if (distance <= 200) {
+            gpio_write(GREEN_LED, ON); // Turn on green LED light
+            gpio_write(RED_LED, ON); // Turn on red LED light (for yellow LED appearance)
+        }
+        else if (distance > 200) {
+            gpio_write(RED_LED, OFF); // Turn off red LED initially
+            gpio_write(GREEN_LED, ON); // Turn on green LED light only
+        } 
     }
 }
+
+
 
 int read_from_pi(int devid)
 {
@@ -51,12 +49,13 @@ int read_from_pi(int devid)
     
     if (ser_isready(1)) {
         ser_readline(devid, sizeof(angle_txt), angle_txt); // reads the line from the pi and and stores it as chars in angle_txt
-        angle = atoi(line); // converts angle_txt into an int and stores it into the angle variable
+        angle = atoi(angle_txt); // converts angle_txt into an int and stores it into the angle variable
     }
     
     return angle; // returns the read angle integer value
 
 }
+
 
 void steering(int gpio, int pos)
 {
