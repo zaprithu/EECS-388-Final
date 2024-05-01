@@ -91,7 +91,8 @@ while(1):
 		# prediction from the model. This is so that
 		# the HiFive can run the other functions in between
 		if count%4 == 0:
-			pass
+			ser = serial.Serial("/dev/ttyAMA1", 115200)
+			ser.write()
 			#Your code here.
 
 		
